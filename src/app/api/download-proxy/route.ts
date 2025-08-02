@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const fileUrl = searchParams.get("url");
+  const mode = searchParams.get("mode") || "file"; 
   const filename = searchParams.get("filename") || "gram-grabberz-video.mp4"; // Default filename
 
   if (!fileUrl) {
@@ -21,7 +22,13 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    // Nếu người dùng muốn JSON (mode=json)
+    if (mode === "json") {
+      return NextResponse.json({
+        success: true,
+        videoUrl: fileUrl,
+      });
+    }
     // Fetch the video from the external URL
     const videoResponse = await fetch(fileUrl);
 
